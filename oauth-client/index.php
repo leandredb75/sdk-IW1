@@ -76,7 +76,8 @@ switch ($route) {
             $_SESSION['token'] = $token;
             $twitch->set_headers($_SESSION['token']);
             $query = $twitch->getTwUser();
-            print_r($query);
+            $_SESSION["user"] = $query["data"][0];
+            echo "Welcome " . $_SESSION["user"]["display_name"];
         }
         break;
     case '/tw-error':

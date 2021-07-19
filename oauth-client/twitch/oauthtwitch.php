@@ -23,9 +23,7 @@
         }
 
         public function get_token($code){
-            // Lien pour avoir le token
             $link = API_ID_TWITCH_LINK. "/token?client_id=".$this->_client_id."&client_secret=".$this->_client_secret."&code=".$code."&grant_type=authorization_code&redirect_uri=".$this->_redirect_uri;
-            // Request cURL POST pour get le token
             $ch = curl_init($link);
 
             curl_setopt($ch, CURLOPT_POST, 1);
@@ -34,12 +32,9 @@
             $res = curl_exec($ch);
             curl_close($ch);
 
-            // Decode
             $token = json_decode($res);
-            // On place le token en attribut privée 
             $this->_token = $token;
 
-            // On return le token
             return $token->access_token;
         }
         public function set_headers($token){
@@ -51,7 +46,6 @@
 
         public function getTwUser(){
             $link = API_LINK. "/users";
-            
             $ch = curl_init($link);
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -60,7 +54,7 @@
             $res = curl_exec($ch);
             curl_close($ch);
 
-            return json_decode(json_encode($res), true);
+            return json_decode($res, true);
         }
 
     }
