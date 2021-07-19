@@ -3,6 +3,8 @@ const CLIENT_ID = "client_606c5bfe886e14.91787997";
 const CLIENT_SECRET = "2ce690b11c94aca36d9ec493d9121f9dbd5c96a5";
 const FBCLIENT_ID = "2960039270934872";
 const FBCLIENT_SECRET = "edc0f660fdc73de629915a8e9a31c175";
+const GOOGLECLIENT_ID = "25477315879-4idkk63gc7nlt6cile7uhdk2o4sevdrh.apps.googleusercontent.com";
+const GOOGLECLIENT_SECRET = "XIM8GBkbFqIDpntPBVXJOq5G";
 
 
 function getUser($params)
@@ -30,6 +32,25 @@ function getFbUser($params)
         . "redirect_uri=https://localhost/fb-success"
         . "&client_id=" . FBCLIENT_ID
         . "&client_secret=" . FBCLIENT_SECRET
+        . "&" . http_build_query($params));
+    $token = json_decode($result, true)["access_token"];
+    // GET USER by TOKEN
+    $context = stream_context_create([
+        'http' => [
+            'method' => "GET",
+            'header' => "Authorization: Bearer " . $token
+        ]
+    ]);
+    $result = file_get_contents("https://graph.facebook.com/me", false, $context);
+    $user = json_decode($result, true);
+    var_dump($user);
+}
+function getGoogleUser($params)
+{
+    $result = file_get_contents("https://account.google.com/oauth/access_token?"
+        . "redirect_uri=https://localhost/fb-success"
+        . "&client_id=" . GOOGLECLIENT_ID
+        . "&client_secret=" . GOOGLECLIENT_SECRET
         . "&" . http_build_query($params));
     $token = json_decode($result, true)["access_token"];
     // GET USER by TOKEN
@@ -71,6 +92,13 @@ switch ($route) {
             . "&client_id=" . FBCLIENT_ID
             . "&redirect_uri=https://localhost/fb-success"
             . "&scope=email&state=dsdsfsfds'>Login with facebook</a>";
+        echo "<a href='http://accounts.google.com/o/oauth2/v2/auth?"
+            . "scope=email&"
+            . "access_type=online&"
+            . "redirect_uri=". urldecode('http://localhost:8081/connect.php')."&"
+            . "response_type=code&"
+            . "client_id=". GOOGLECLIENT_ID
+            ."'> Login with  Google</a>";
         break;
     case '/success':
         // GET CODE
