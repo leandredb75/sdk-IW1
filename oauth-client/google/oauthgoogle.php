@@ -6,11 +6,14 @@
         
         private $_client_id;
         private $_client_secret;
+        private $_redirect_uri;
+
         
 
-        public function __construct($client_id, $client_secret){
+        public function __construct($client_id, $client_secret, $redirect_uri){
             $this->_client_id = $client_id;
             $this->_client_secret = $client_secret;
+            $this->_redirect_uri = $redirect_uri;
         }
 
         public function get_link_connect(){
@@ -20,8 +23,8 @@
             include_granted_scopes=true&
             response_type=code&
             state=state_parameter_passthrough_value&
-            redirect_uri=https%3A//oauth2.example.com/code&
-            client_id=client_id';
+            redirect_uri='. $this->_redirect_uri .' 
+            &client_id='.$this->_client_id;
             return $link;
         }
 
