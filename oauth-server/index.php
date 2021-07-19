@@ -28,6 +28,7 @@ function write_file($data, $file)
     return file_put_contents($file, implode(PHP_EOL, $data));
 }
 
+
 function register()
 {
     [
