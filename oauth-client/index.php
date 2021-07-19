@@ -4,6 +4,20 @@ const CLIENT_SECRET = "2ce690b11c94aca36d9ec493d9121f9dbd5c96a5";
 const FBCLIENT_ID = "2960039270934872";
 const FBCLIENT_SECRET = "edc0f660fdc73de629915a8e9a31c175";
 
+session_start();
+
+require_once 'twitch/config.php';
+require_once 'twitch/oauthtwitch.php';
+
+$link = $oauth->get_link_connect();
+
+if(!empty($_GET['code'])){
+    $code = htmlspecialchars($_GET['code']);
+    $token = $oauth->get_token($code);
+
+    $_SESSION['token'] = $token;
+    var_dump($_SESSION['token']);
+}
 
 function getUser($params)
 {
@@ -65,12 +79,13 @@ switch ($route) {
         echo "<a href='http://localhost:8081/auth?"
             . "response_type=code"
             . "&client_id=" . CLIENT_ID
-            . "&scope=basic&state=dsdsfsfds'>Login with oauth-server</a>";
+            . "&scope=basic&state=dsdsfsfds'>Login with oauth-server</a><br>";
         echo "<a href='https://facebook.com/v2.10/dialog/oauth?"
             . "response_type=code"
             . "&client_id=" . FBCLIENT_ID
             . "&redirect_uri=https://localhost/fb-success"
-            . "&scope=email&state=dsdsfsfds'>Login with facebook</a>";
+            . "&scope=email&state=dsdsfsfds'>Login with facebook </a><br>";
+        echo "<a href=". $link .">Login with Twitch</a><br>";
         break;
     case '/success':
         // GET CODE
