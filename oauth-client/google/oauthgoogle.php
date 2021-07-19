@@ -8,8 +8,6 @@
         private $_client_secret;
         private $_redirect_uri;
 
-        
-
         public function __construct($client_id, $client_secret, $redirect_uri){
             $this->_client_id = $client_id;
             $this->_client_secret = $client_secret;
