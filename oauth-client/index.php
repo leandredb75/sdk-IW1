@@ -10,8 +10,12 @@ require_once 'twitch/oauthtwitch.php';
 require_once 'facebook/config.php';
 require_once 'facebook/oauthfacebook.php';
 
+require_once 'google/config.php';
+require_once 'google/oauthgoogle.php';
+
 $linkTwitch = $twitch->get_link_connect();
 $linkFacebook = $facebook->get_link_connect();
+$linkGoogle = $google->get_link_connect();
 
 
 function getUser($params)
@@ -46,6 +50,7 @@ switch ($route) {
             . "&scope=basic&state=dsdsfsfds'>Login with oauth-server</a><br>";
         echo "<a href=". $linkFacebook . ">Login with facebook </a><br>";
         echo "<a href=". $linkTwitch .">Login with Twitch</a><br>";
+        echo "<a href=". $linkGoogle . ">Login with Google</a><br>";
         break;
     case '/success':
         // GET CODE
