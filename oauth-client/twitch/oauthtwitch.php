@@ -1,4 +1,6 @@
 <?php 
+    define('API_LINK', 'https://api.twitch.tv/helix');
+    define('API_ID_TWITCH_LINK', 'https://id.twitch.tv/oauth2');
     
     class OAuthTwitch{
         private $_client_id;
@@ -16,13 +18,13 @@
         }
 
         public function get_link_connect(){
-            $link = "https://id.twitch.tv/oauth2/authorize?client_id=".$this->_client_id."&redirect_uri=".$this->_redirect_uri."&response_type=code&scope=".$this->_scope."&force_verify=true";
+            $link = API_ID_TWITCH_LINK. "/authorize?client_id=".$this->_client_id."&redirect_uri=".$this->_redirect_uri."&response_type=code&scope=".$this->_scope."&force_verify=true";
             return $link;
         }
 
         public function get_token($code){
             // Lien pour avoir le token
-            $link = "https://id.twitch.tv/oauth2/token?client_id=".$this->_client_id."&client_secret=".$this->_client_secret."&code=".$code."&grant_type=authorization_code&redirect_uri=".$this->_redirect_uri;
+            $link = API_ID_TWITCH_LINK. "/token?client_id=".$this->_client_id."&client_secret=".$this->_client_secret."&code=".$code."&grant_type=authorization_code&redirect_uri=".$this->_redirect_uri;
             // Request cURL POST pour get le token
             $ch = curl_init($link);
 
@@ -45,6 +47,20 @@
                 'Authorization: Bearer '.$token,
                 'Client-Id: '.$this->_client_id
             ];
+        }
+
+        public function getTwUser(){
+            $link = API_LINK. "/users";
+            
+            $ch = curl_init($link);
+
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $this->_headers);
+
+            $res = curl_exec($ch);
+            curl_close($ch);
+
+            return json_decode(json_encode($res), true);
         }
 
     }

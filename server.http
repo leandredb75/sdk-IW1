@@ -3,9 +3,9 @@ POST http://localhost:8081/register
 Content-Type: application/x-www-form-urlencoded
 
 name=Test2
-&uri=http://localhost:8082
-&redirect_success=http://localhost:8082/success
-&redirect_error=http://localhost:8082/error
+&uri=https://localhost
+&redirect_success=https://localhost/success
+&redirect_error=https://localhost/error
 
 ###
 GET http://localhost:8081/auth?response_type=code&client_id=client_606c5bfe886e14.91787997&scope=email&state=dskdlnznscxjls
@@ -25,3 +25,7 @@ GET http://localhost:8081/token?grant_type=client_credentials&client_id=client_6
 ###
 GET http://localhost:8081/api
 Authorization: Bearer token_60d9c0ad18bd58.24315278
+
+###
+GET https://api.twitch.tv/helix/users
+Authorization: Bearer p8rwnp5blat6x5jwl70q847ctnh1rk

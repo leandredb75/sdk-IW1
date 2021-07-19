@@ -9,15 +9,12 @@ session_start();
 require_once 'twitch/config.php';
 require_once 'twitch/oauthtwitch.php';
 
-$link = $oauth->get_link_connect();
+require_once 'facebook/config.php';
+require_once 'facebook/oauthfacebook.php';
 
-if(!empty($_GET['code'])){
-    $code = htmlspecialchars($_GET['code']);
-    $token = $oauth->get_token($code);
+$linkTwitch = $twitch->get_link_connect();
+$linkFacebook = $facebook->get_link_connect();
 
-    $_SESSION['token'] = $token;
-    var_dump($_SESSION['token']);
-}
 
 function getUser($params)
 {
@@ -36,6 +33,8 @@ function getUser($params)
     $result = file_get_contents("http://oauth-server:8081/api", false, $context);
     $user = json_decode($result, true);
     var_dump($user);
+    echo '<h1>Welcome '. $user["firstname"] .' ' . $user["lastname"] . '</h1>';
+
 }
 
 function getFbUser($params)
@@ -56,6 +55,8 @@ function getFbUser($params)
     $result = file_get_contents("https://graph.facebook.com/me", false, $context);
     $user = json_decode($result, true);
     var_dump($user);
+
+    echo '<h1>Welcome '. $user["name"] . '</h1>';
 }
 
 /**
@@ -80,12 +81,8 @@ switch ($route) {
             . "response_type=code"
             . "&client_id=" . CLIENT_ID
             . "&scope=basic&state=dsdsfsfds'>Login with oauth-server</a><br>";
-        echo "<a href='https://facebook.com/v2.10/dialog/oauth?"
-            . "response_type=code"
-            . "&client_id=" . FBCLIENT_ID
-            . "&redirect_uri=https://localhost/fb-success"
-            . "&scope=email&state=dsdsfsfds'>Login with facebook </a><br>";
-        echo "<a href=". $link .">Login with Twitch</a><br>";
+        echo "<a href=". $linkFacebook . ">Login with facebook </a><br>";
+        echo "<a href=". $linkTwitch .">Login with Twitch</a><br>";
         break;
     case '/success':
         // GET CODE
@@ -106,6 +103,20 @@ switch ($route) {
         ]);
         break;
     case '/error':
+        ["state" => $state] = $_GET;
+        echo "Auth request with state {$state} has been declined";
+        break;
+    case '/tw-success':
+        if(!empty($_GET['code'])){
+            $code = htmlspecialchars($_GET['code']);
+            $token = $twitch->get_token($code);
+            $_SESSION['token'] = $token;
+            $twitch->set_headers($_SESSION['token']);
+            $query = $twitch->getTwUser();
+            print_r($query);
+        }
+        break;
+    case '/tw-error':
         ["state" => $state] = $_GET;
         echo "Auth request with state {$state} has been declined";
         break;
