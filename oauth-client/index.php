@@ -74,21 +74,7 @@ switch ($route) {
         ["state" => $state] = $_GET;
         echo "Auth request with state {$state} has been declined";
         break;
-    case '/tw-success':
-        if(!empty($_GET['code'])){
-            $code = htmlspecialchars($_GET['code']);
-            $token = $twitch->get_token($code);
-            $_SESSION['token'] = $token;
-            $twitch->set_headers($_SESSION['token']);
-            $query = $twitch->getTwUser();
-            $_SESSION["user"] = $query["data"][0];
-            echo "Welcome " . $_SESSION["user"]["display_name"];
-        }
-        break;
-    case '/tw-error':
-        ["state" => $state] = $_GET;
-        echo "Auth request with state {$state} has been declined";
-        break;
+    
     case '/password':
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             ['username' => $username, 'password' => $password] = $_POST;
@@ -106,7 +92,33 @@ switch ($route) {
             echo "</form>";
         }
         break;
+    case '/tw-success':
+        if(!empty($_GET['code'])){
+            $code = htmlspecialchars($_GET['code']);
+            $token = $twitch->get_token($code);
+            $_SESSION['token'] = $token;
+            $twitch->set_headers($_SESSION['token']);
+            $query = $twitch->getTwUser();
+            $_SESSION["user"] = $query["data"][0];
+            echo "Welcome " . $_SESSION["user"]["display_name"];
+        }
+        break;
+    case '/tw-error':
+        ["state" => $state] = $_GET;
+        echo "Auth request with state {$state} has been declined";
+        break;
+    case '/gg-success': 
+        $code = htmlspecialchars($_GET['code']);
+        $token = $google->get_token($code);
+        $_SESSION['token'] = $token;
+        $google->set_headers($_SESSION['token']);
+        $query = $google->getGgUser();
+        $_SESSION['user'] = $query;
+        // print_r($query);
+        echo "<img src=". $query["picture"]." alt>"; 
+        echo "Welcome " . $query["email"]; 
+        break;
     default:
-        echo 'not_found leandre';
+        echo 'not_found client';
         break;
 }
